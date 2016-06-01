@@ -1,13 +1,14 @@
-#### Simulation for RW model with multiple causes
+#### simulation for RW model with multiple (2) causes
+# effect is a linear combination of causes 
 
-# load libraries, be sure to source the RW_model file
+# load libraries
 library("tidyr")
 library("dplyr")
 library("ggplot2")
 theme_set(theme_bw())
 
 # parameters for generating data
-i <- 100 # num of trials
+i <- 1000 # num of trials
 j <- 2 # num of causes (excluding background cue)
 causes <- character() # vector for cause labels
 weights <- runif(j,-1,1) # weights for causes
@@ -44,5 +45,5 @@ rw.V <- rw %>% gather(Vcue, V, Vc0:VTotal) %>% arrange(t, Vcue) %>% filter(Vcue 
 ggplot(rw.V, aes(x=t, color=Vcue, y=V)) + geom_line() + ggtitle("Associative strength over time")
 
 # plot deltaV by trial
-# rw.dV <- rw %>% gather(dVcue, dV, dVc0:dVc2) %>% arrange(t, dVcue)
-# ggplot(rw.dV, aes(x=t, color=dVcue, y=dV)) + geom_line() 
+rw.dV <- rw %>% gather(dVcue, dV, dVc0:dVc2) %>% arrange(t, dVcue)
+ggplot(rw.dV, aes(x=t, color=dVcue, y=dV)) + geom_line() + ggtitle("Change in associative strength over time")

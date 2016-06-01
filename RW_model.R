@@ -2,7 +2,7 @@
 ########## Rescorla-Wagner model ##########
 ###########################################
 
-#### valculates associative strength for different causes
+#### calculates associative strength for different causes
 # alpha = learning rate, default of .1
 # df = data frame of cause(s) and effect (causes should include background cue)
 # effectCol = column number of effect
