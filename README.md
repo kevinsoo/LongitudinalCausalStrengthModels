@@ -4,3 +4,5 @@ Different models for computing causal strength from longitudinal data. Generally
 
 Models so far:
 * Rescorla-Wagner
+* ∆P
+* Power-PC
