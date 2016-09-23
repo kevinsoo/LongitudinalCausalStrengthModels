@@ -6,8 +6,9 @@
 # alpha = learning rate, default of .1
 # df = data frame of cause(s) and effect (causes should include background cue)
 # effectCol = column number of effect
+# output includes final row showing final V values for cause(s)
 
-RW <- function(alpha=0.1, df, effectCol) {
+RW <- function(alpha=.1, df, effectCol) {
     e <- df[,effectCol] # extracts effect
     c <- df[,-effectCol] # extracts cause(s)
     i <- dim(c)[1] # num of observations
@@ -38,6 +39,6 @@ RW <- function(alpha=0.1, df, effectCol) {
     
     # return associative strengths in data frame WITH original data frame
     df[i+1,] <- NA
-    t <- c(1:(i+1))
+    t <- c(1:i, "end")
     return(data.frame(t, df, V, VTotal, error, dV))
 }
