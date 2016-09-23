@@ -1,6 +1,6 @@
 ### LongitudinalCausalStrengthModels
 
-Different models for computing causal strength from longitudinal data. Generally, *"_model"* and "_function" files contain functions that perform model computations, and "_simplot" files contain simple simulations and accompanying plots of important results. Source/run the model/function files before running any simulations.
+Different models for computing causal strength from longitudinal data. Generally, "*_model.R*"" and "*_function.R*" files contain functions that perform model computations, and "*_simplot.R*" files contain simple simulations and accompanying plots of important results. Source/run the model/function files before running any simulations.
 
 Models in repository (so far):
 * Rescorla-Wagner ([Rescorla & Wagner, 1972](http://gureckislab.org/courses/fall13/learnmem/papers/RescorlaWagner1971.pdf))
