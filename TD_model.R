@@ -11,15 +11,8 @@ traces <- function(cause, beta=.8) {
     j <- dim(cause)[2] # num of causes
 
     # set up vectors for computing xBar
-    vectors <- character(j) # names of all columns
-    for (k in 1:j) {
-        vectors[k] <- paste("xBar.", colnames(cause)[k], sep="") # create xBar columns
-    }
-    
-    # create vectors
-    xBar <- matrix(0, nrow=i, ncol=j) # xBar vectors for all causes
-    colnames(xBar) <- vectors # name the columns
-    
+    xBar <- createOutputCols("xBar", cause, extra=TRUE)
+
     # compute eligibility trace for each time point after t = 1, where xBar = 0
     for (t in 2:i) {
         for (n in 1:j) { # compute xBar for each cause
@@ -63,26 +56,21 @@ pred <- function(cause, w, t, time) {
 # c = scaling parameter, default of .01
 # gamma = parameter weighting presence vs. change in cause(s), defaults to .95 giving preference to presence of cause(s)
 
-TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8) {
+TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=TRUE) {
     e <- df[,effectCol] # extracts effect
     cause <- df[,-effectCol] # extracts cause(s)
     i <- dim(cause)[1] # num of observations
     j <- dim(cause)[2] # num of causes
     
     # set up vectors for computing weights
-    vectors <- character(j) # names of all columns
-    for (k in 1:j) {
-        vectors[k] <- paste("W", colnames(cause)[k], sep="") # create weight columns
-    }
-    
-    # create vectors
-    w <- matrix(0, nrow=i+1, ncol=j) # weight vectors for all causes
-    colnames(w) <- vectors # name the columns
+    w <- createOutputCols("w", cause, extra=TRUE)
+
+    # create other vectors
     predPast <- numeric(i+1) # vector for predictions from past values of cause(s)
     predPres <- numeric(i+1) # vector for predictions from present values of cause(s)
     
     # compute trace
-    xBar <- rbind(traces(cause, beta), numeric(j))
+    xBar <- traces(cause, beta)
     
     for (t in 1:i) {
         # calculate predictions from past and present values of cause(s)
@@ -94,9 +82,16 @@ TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8) {
         }
     }
     
-    # return weights and predictions in data frame WITH original data frame
+    # input end values
+    predPast[i+1] <- pred(cause, w, i+1, time="past")
+    predPres[i+1] <- NA
+    xBar[i+1,] <- NA
     df[i+1,] <- NA
-    t <- c(1:i, "end")
-    y <- c(e + predPres, 0) # TD output
-    return(data.frame(t, df, xBar, predPres, predPast, w, y))
+    t <- 1:i+1
+    y <- df$e + predPres # TD output
+    
+    # return weights and predictions in data frame WITH original data frame
+    td <- data.frame(t, df, xBar, predPres, predPast, w, y)
+    if (final==TRUE) { return(td) } # by default, final row is returned
+    else if (final==FALSE) { return(td[1:i,]) }
 }

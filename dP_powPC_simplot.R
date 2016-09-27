@@ -1,23 +1,27 @@
-#### simulation for elemental causal induction with dP and powPC
-
+############# simulation for elemental causal induction with dP and powPC
 # load libraries
-library("tidyr")
-library("dplyr")
-library("ggplot2")
+library("tidyverse")
 theme_set(theme_bw())
 
+############# generate data
 # parameters for generating data
-i <- 100 # num of trials
+i <- 1000 # num of trials
+c.strength <- .5 # power
+c.base <- .1 # base rate of cause
+e.base <- .1 # base rate of effect
 
-#### generate observations of c and e according to particular causal strength (function outputs x and y)
-df <- createObs(0.1,0.8,0.1,i)
+# generate observations of c and e according to particular causal strength (function outputs x and y)
+df <- createObs(c.base, c.strength, e.base, i)
 c <- df$x
 e <- df$y
 
-#### sample output
-dP.powPC <- dP.powPC(c, e)
-powPC <- powPC(c, e)
+############# dP and powPC simulation
+df <- dP.powPC(c, e)
 
-#### plots
-causalStrength <- dP.powPC %>% gather(model, strength, dP:powPC)
-ggplot(causalStrength, aes(x=t, color=model, y=strength)) + geom_line() + ggtitle("Causal strength over time")
+############# plots
+# plot dP and powPC by trial
+causalStrength <- df %>% gather(model, strength, dP:powPC)
+ggplot(causalStrength, aes(x=t, color=model, y=strength)) + 
+    geom_line() + 
+    geom_hline(yintercept=c.strength, linetype="dashed") +
+    ggtitle("Causal strength over time")

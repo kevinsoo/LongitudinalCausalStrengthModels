@@ -64,26 +64,3 @@ dP.powPC <- function(c, e, valence="pos") {
     t <- c(1:i)
     return(data.frame(t, c, e, state, dP, powPC))
 }
-
-###################################
-########## PowerPC model ##########
-###################################
-
-#### calculates causal power for elemental cause-effect relation
-# computes power for generative causes by default, set valence to "neg" for preventive cause
-# no parameters
-
-powPC <- function(c, e, valence="pos") {
-    i <- length(c) # num of observations
-    state <- convertToStates(c, e) # converts obervations to A, B, C, D format
-    cps <- condProb(state) # compute conditional probabilities
-    dP <- cps$pEC - cps$pEc # start with deltaP
-    
-    # compute causal power at each trial, differently for generative/preventive causes
-    if (valence == "pos") { powPC <- dP/(1-cps$pEc) }
-    else if (valence == "neg") { powPC <- (-1)*(dP/cps$pEc) }
-    
-    # return contingency strength in data frame WITH original data frame
-    t <- c(1:i)
-    return(data.frame(t, c, e, state, powPC))
-}

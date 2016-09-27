@@ -1,11 +1,10 @@
-############# simulation for RW model with multiple (2) causes
 # load libraries
 library("tidyverse")
 theme_set(theme_bw())
 
 ############# generate data
 # parameters for generating data
-i <- 100 # num of trials
+i <- 1000 # num of trials
 j <- 2 # num of causes (excluding background cue)
 causes <- character() # vector for cause labels
 weights <- runif(j,-1,1) # weights for causes
@@ -31,18 +30,11 @@ for (q in 1:i) {
 df <- data.frame(e, c0, c1, c2)
 
 ############# rw simulation
-rw <- RW(alpha=.1, df, effectCol=1)
+td <- TD(df, effectCol=1, c=.05)
 
-############# plots
-# plot error by trial
-ggplot(rw, aes(x=t, y=error)) + geom_line() + ggtitle("Prediction error over time")
+ggplot(data=td, aes(x=t)) + 
+    geom_line(aes(y=w.c1, color="w.c1")) + 
+    geom_line(aes(y=w.c0, color="w.c0")) + 
+    geom_line(aes(y=xBar.c1, colour="xBar.c1"), linetype="dashed") + 
+    geom_point(aes(y=c1, colour="c1"), size=4) + geom_line(aes(y=e, colour="e"))
 
-# plot strength (V) by trial
-rw.V <- rw %>% gather(Vcue, V, V.c0:VTotal) %>% arrange(t, Vcue) %>% filter(Vcue != "VTotal")
-ggplot(rw.V, aes(x=t, color=Vcue, y=V)) + geom_line() + 
-    geom_hline(yintercept=weights, linetype="dashed") +
-    ggtitle("Associative strength over time")
-
-# plot deltaV by trial
-rw.dV <- rw %>% gather(dVcue, dV, dV.c0:dV.c2) %>% arrange(t, dVcue)
-ggplot(rw.dV, aes(x=t, color=dVcue, y=dV)) + geom_line() + ggtitle("Change in associative strength over time")
