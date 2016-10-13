@@ -56,7 +56,7 @@ pred <- function(cause, w, t, time) {
 # c = scaling parameter, default of .01
 # gamma = parameter weighting presence vs. change in cause(s), defaults to .95 giving preference to presence of cause(s)
 
-TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=TRUE) {
+TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=TRUE, w0=0, w1=0, w2=0) {
     e <- df[,effectCol] # extracts effect
     cause <- df[,-effectCol] # extracts cause(s)
     i <- dim(cause)[1] # num of observations
@@ -64,6 +64,11 @@ TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=TRUE) {
     
     # set up vectors for computing weights
     w <- createOutputCols("w", cause, extra=TRUE)
+    w[1,1] <- w0 # starting weight of background
+    w[1,2] <- w1 # starting weight of cause 1
+    if (j > 2) {
+        w[1,3] <- w2 # starting weight of cause 2
+    }
 
     # create other vectors
     predPast <- numeric(i+1) # vector for predictions from past values of cause(s)
@@ -87,7 +92,7 @@ TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=TRUE) {
     predPres[i+1] <- NA
     xBar[i+1,] <- NA
     df[i+1,] <- NA
-    t <- 1:i+1
+    t <- 1:(i+1)
     y <- df$e + predPres # TD output
     
     # return weights and predictions in data frame WITH original data frame

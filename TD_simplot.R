@@ -36,5 +36,5 @@ ggplot(data=td, aes(x=t)) +
     geom_line(aes(y=w.c1, color="w.c1")) + 
     geom_line(aes(y=w.c0, color="w.c0")) + 
     geom_line(aes(y=xBar.c1, colour="xBar.c1"), linetype="dashed") + 
-    geom_point(aes(y=c1, colour="c1"), size=4) + geom_line(aes(y=e, colour="e"))
+    geom_point(aes(y=c1, colour="c1"), size=4) + geom_point(aes(y=e, colour="e"))
 
