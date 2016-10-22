@@ -6,9 +6,10 @@
 # alpha = learning rate, default of .1
 # df = data frame of cause(s) and effect (causes should include background cue)
 # effectCol = column number of effect
+# startV is an optional list of starting weights (length should match number of causes)
 # output includes final row showing final V values for cause(s)
 
-RW <- function(alpha=.1, df, effectCol, final=TRUE) {
+RW <- function(alpha=.1, df, effectCol, final=FALSE, startV=NULL) {
     e <- df[,effectCol] # extracts effect
     c <- df[,-effectCol] # extracts cause(s)
     i <- dim(c)[1] # num of observations
@@ -18,6 +19,13 @@ RW <- function(alpha=.1, df, effectCol, final=TRUE) {
     V <- createOutputCols("V", c, extra=TRUE)
     dV <- createOutputCols("dV", c, extra=TRUE)
 
+    # give custom starting weights
+    if (is.null(startV)==FALSE) {
+        for (p in 1:length(startV)) {
+            V[1,p] <- startV[p]
+        }
+    }
+    
     # create other vectors
     VTotal <- numeric(i) # vector for total V
     error <- c(numeric(i), NA) # vector for error

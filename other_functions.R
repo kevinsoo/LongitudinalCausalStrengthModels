@@ -25,6 +25,8 @@ createObs <- function(c.base, c.strength, e.base, n=1) {
 createOutputCols <- function(name, c, extra=FALSE) {
     i <- dim(c)[1] # num of observations
     j <- dim(c)[2] # num of causes
+    if (is.null(i)==TRUE) { i <- length(c) } # if only one cause
+    if (is.null(j)==TRUE) { j <- 1 } # if only one cause
     
     # if you want an extra row at the end
     if (extra==TRUE) { i <- i + 1 }

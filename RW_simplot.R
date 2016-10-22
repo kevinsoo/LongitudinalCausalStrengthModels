@@ -31,7 +31,7 @@ for (q in 1:i) {
 df <- data.frame(e, c0, c1, c2)
 
 ############# rw simulation
-rw <- RW(alpha=.1, df, effectCol=1)
+rw <- RW(alpha=.1, df, effectCol=1, startV=c(0,.5,.5))
 
 ############# plots
 # plot error by trial

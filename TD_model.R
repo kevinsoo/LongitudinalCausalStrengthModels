@@ -54,9 +54,10 @@ pred <- function(cause, w, t, time) {
 # df = data frame of cause(s) and effect
 # effectCol = column number of effect
 # c = scaling parameter, default of .01
+# startW is an optional list of starting weights (length should match number of causes)
 # gamma = parameter weighting presence vs. change in cause(s), defaults to .95 giving preference to presence of cause(s)
 
-TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=TRUE, w0=0, w1=0, w2=0) {
+TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=FALSE, startW=NULL) {
     e <- df[,effectCol] # extracts effect
     cause <- df[,-effectCol] # extracts cause(s)
     i <- dim(cause)[1] # num of observations
@@ -64,10 +65,12 @@ TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=TRUE, w0=0, w1=0,
     
     # set up vectors for computing weights
     w <- createOutputCols("w", cause, extra=TRUE)
-    w[1,1] <- w0 # starting weight of background
-    w[1,2] <- w1 # starting weight of cause 1
-    if (j > 2) {
-        w[1,3] <- w2 # starting weight of cause 2
+    
+    # give custom starting weights
+    if (is.null(startW)==FALSE) {
+        for (p in 1:length(startW)) {
+            w[1,p] <- startW[p]
+        }
     }
 
     # create other vectors
@@ -94,9 +97,11 @@ TD <- function(df, effectCol, c=.01, gamma=.95, beta=.8, final=TRUE, w0=0, w1=0,
     df[i+1,] <- NA
     t <- 1:(i+1)
     y <- df$e + predPres # TD output
+    present <- df$e + gamma*predPres # present prediction with e
+    error <- present - predPast # error in prediction
     
     # return weights and predictions in data frame WITH original data frame
-    td <- data.frame(t, df, xBar, predPres, predPast, w, y)
+    td <- data.frame(t, df, xBar, predPres, predPast, present, error, w, y)
     if (final==TRUE) { return(td) } # by default, final row is returned
     else if (final==FALSE) { return(td[1:i,]) }
 }

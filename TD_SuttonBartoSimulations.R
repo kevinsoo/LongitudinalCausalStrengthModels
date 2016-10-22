@@ -90,8 +90,8 @@ aveData1 <- aggregate(td1, by=list(trial), FUN=mean)
 ggplot() + geom_line(data=aveData0, aes(x=trial, y=w.c2)) + geom_line(data=aveData1, aes(x=trial, y=w.c2), color="red")
 
 ########## for graph on p370 Figure 9, set initial weights of c2 to be fully conditioned
-td0 <- TD(xWithout, effectCol=1, c=.1, beta=.8, gamma=.95, final=FALSE, w1=1.653)
-td1 <- TD(xWith, effectCol=1, c=.1, beta=.8, gamma=.95, final=FALSE, w2=1.653)
+td0 <- TD(xWithout, effectCol=1, c=.1, beta=.8, gamma=.95, final=FALSE, startW=c(0,1.653))
+td1 <- TD(xWith, effectCol=1, c=.1, beta=.8, gamma=.95, final=FALSE, startW=c(0,0,1.653))
 td0 <- data.frame(trial, td0)
 td1 <- data.frame(trial, td1)
 aveData0 <- aggregate(td0, by=list(trial), FUN=mean)
@@ -113,7 +113,7 @@ df <- data.frame(e,c0,c1,c2)
 trial <- sort(rep(1:50, 60)) # number of trials
 
 ########## simulation
-td <- TD(df, effectCol=1, c=.1, beta=.8, gamma=.95, final=FALSE, w2=1.653)
+td <- TD(df, effectCol=1, c=.1, beta=.8, gamma=.95, final=FALSE, startW=c(0,0,1.653))
 td <- data.frame(trial, td)
 aveData <- aggregate(td, by=list(trial), FUN=mean)
 ggplot(data=aveData, aes(x=trial, y=w.c1)) + geom_line() + geom_line(aes(y=w.c2), color="red")
